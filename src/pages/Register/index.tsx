@@ -8,6 +8,7 @@ import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import OuterLayout from '../../layouts/OuterLayout';
 import GoogleIcon from '../../assets/icons/GoogleIcons';
+import { useNavigate  } from "react-router-dom";
 
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
@@ -19,6 +20,66 @@ interface SignInFormElement extends HTMLFormElement {
 }
 
 export default function Register() {
+
+  const navigate = useNavigate();
+
+  // SACAR ESTA FUNCION DE ACA Y DE LOGIN/INDEX.TSX Y SACAR A OTRO ARCHIVO!!
+  const login = async (username: string, password: string) => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/signin`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+  
+    if (response.status === 200) {
+      navigate("/dashboard/profile");
+    } else {
+      console.error('Error de inicio de sesión');
+    }
+  }
+
+  const register = async (username: string, email: string,  password: string) => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+				username,
+				email,
+				password,
+				"roles": [
+					"user"
+				]
+			}),
+    });
+  
+    if (response.status === 200) {
+      alert('Registrado');
+      await login(username, password);
+    } else {
+      console.error('Error de inicio de sesión');
+    }
+  }
+
+  const handleSubmit = async (event: React.FormEvent<SignInFormElement>) => {
+    event.preventDefault();
+
+    const formElements = event.currentTarget.elements;
+    const username = formElements.username.value;
+    const email = formElements.email.value;
+    const password = formElements.password.value;
+
+    try {
+      await register(username, email, password);
+    } catch (error) {
+      console.error('Error de red', error);
+    }
+  }
+
+
   return (
     <OuterLayout>
       <Box
@@ -53,21 +114,12 @@ export default function Register() {
           </Typography>
         </div>
         <form
-          onSubmit={(event: React.FormEvent<SignInFormElement>) => {
-            event.preventDefault();
-            const formElements = event.currentTarget.elements;
-            const data = {
-              email: formElements.email.value,
-              password: formElements.password.value,
-              confirm: formElements.confirm.value,
-            };
-            if (data.password !== data.confirm) {
-              alert("passwords don't match");
-            } else {
-              window.location.assign('/dashboard');
-            }
-          }}
+          onSubmit={handleSubmit}
         >
+          <FormControl>
+            <FormLabel>Username</FormLabel>
+            <Input type="text" name="username" />
+          </FormControl>
           <FormControl>
             <FormLabel>Email</FormLabel>
             <Input type="email" name="email" />
@@ -77,7 +129,6 @@ export default function Register() {
             <Input
               type="password"
               name="password"
-              slotProps={{ input: { minLength: 8 } }}
             />
           </FormControl>
           <FormControl>
@@ -85,7 +136,6 @@ export default function Register() {
             <Input
               type="password"
               name="confirm"
-              slotProps={{ input: { minLength: 8 } }}
             />
           </FormControl>
 
@@ -93,16 +143,6 @@ export default function Register() {
             Sign up
           </Button>
         </form>
-        <Link href="/dashboard">
-          <Button
-            variant="outlined"
-            color="neutral"
-            fullWidth
-            startDecorator={<GoogleIcon />}
-          >
-            Sign up with Google
-          </Button>
-        </Link>
         <Box
           sx={{
             display: 'flex',
@@ -110,11 +150,8 @@ export default function Register() {
             alignItems: 'center',
           }}
         >
-          <Link fontSize="sm" href="/" fontWeight="lg" mr="auto">
-            Back to home
-          </Link>
-          <Link fontSize="sm" href="/forgot-password" fontWeight="lg" ml="auto">
-            Forgot your password?
+          <Link fontSize="sm" href="/sign-in" fontWeight="lg" mr="auto">
+            Tengo una cuenta
           </Link>
         </Box>
       </Box>
