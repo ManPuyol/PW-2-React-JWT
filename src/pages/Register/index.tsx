@@ -25,7 +25,7 @@ export default function Register() {
 
   // SACAR ESTA FUNCION DE ACA Y DE LOGIN/INDEX.TSX Y SACAR A OTRO ARCHIVO!!
   const login = async (username: string, password: string) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/signin`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export default function Register() {
   }
 
   const register = async (username: string, email: string,  password: string) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/signup`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
