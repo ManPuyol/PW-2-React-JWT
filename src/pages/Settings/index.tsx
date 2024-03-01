@@ -9,8 +9,23 @@ import Input from '@mui/joy/Input';
 import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab, { tabClasses } from '@mui/joy/Tab';
+import { Option, Select } from '@mui/joy';
+import Checkbox from '@mui/joy/Checkbox';
+import { useEffect, useState } from 'react';
+import { getUsers } from '../../utils/users';
 
 export default function Settings() {
+
+  const [users, setUsers] = useState<any[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const users = await getUsers()
+      setUsers(users)
+    })()
+  }, [])
+
+
   return (
     <InnerLayout>
       <Box
@@ -89,7 +104,7 @@ export default function Settings() {
             })}
           >
             <Tab indicatorInset value={0}>
-              Account Details
+              Roles
             </Tab>
           </TabList>
           <Box
@@ -109,45 +124,37 @@ export default function Settings() {
               },
             }}
           >
-            <Divider role="presentation" />
             <FormLabel sx={{ display: { xs: 'none', sm: 'block' } }}>
-              Account Login
+              Username
             </FormLabel>
             <Box sx={{ display: { xs: 'contents', sm: 'flex' }, gap: 2 }}>
               <FormControl sx={{ flex: 1 }}>
-                <FormLabel>Email Address</FormLabel>
-                <Input placeholder="Email" type="email" />
+                <FormLabel sx={{ display: { sm: 'none' } }}>Users</FormLabel>
+                <Select placeholder="User">
+                  {users.map((user) => (
+                    <Option value={user.username}>{user.username}</Option>
+                  ))}
+                </Select>
               </FormControl>
-              <FormControl sx={{ flex: 1 }}></FormControl>
             </Box>
+
             <Divider role="presentation" />
             <FormLabel sx={{ display: { xs: 'none', sm: 'block' } }}>
-              Data Usage
+              Roles
             </FormLabel>
             <Box sx={{ display: { xs: 'contents', sm: 'flex' }, gap: 2 }}>
-              <FormControl sx={{ flex: 1 }}>
-                <FormLabel>Total Files</FormLabel>
-                <Input placeholder="Files" type="number" />
-              </FormControl>
-              <FormControl sx={{ flex: 1 }}>
-                <FormLabel>Amount Stored</FormLabel>
-                <Input placeholder="Data" type="number" />
-              </FormControl>
+              <Checkbox
+                size="sm"
+                sx={{ verticalAlign: 'text-bottom' }}
+                label="Moderator"
+              />
+              <Checkbox
+                size="sm"
+                sx={{ verticalAlign: 'text-bottom' }}
+                label="Admin"
+              />
             </Box>
             <Divider role="presentation" />
-            <FormLabel sx={{ display: { xs: 'none', sm: 'block' } }}>
-              Update Password
-            </FormLabel>
-            <Box sx={{ display: { xs: 'contents', sm: 'flex' }, gap: 2 }}>
-              <FormControl sx={{ flex: 1 }}>
-                <FormLabel>New Password</FormLabel>
-                <Input placeholder="Password" type="password" />
-              </FormControl>
-              <FormControl sx={{ flex: 1 }}>
-                <FormLabel>Confirm Password</FormLabel>
-                <Input placeholder="Confirm" type="password" />
-              </FormControl>
-            </Box>
             <Box
               sx={{
                 gridColumn: '1/-1',
