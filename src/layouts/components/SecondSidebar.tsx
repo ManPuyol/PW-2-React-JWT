@@ -86,12 +86,12 @@ export default function SecondSidebar() {
             </Link>
           </ListItem>
           <ListItem>
-            <Link to="/dashboard/orders" style={{ textDecoration: 'none' }}>
+            <Link to="/dashboard/users" style={{ textDecoration: 'none' }}>
               <ListItemButton onClick={() => closeSidebar()}>
                 <ListItemDecorator>
                   <ViewListIcon />
                 </ListItemDecorator>
-                <ListItemContent>Orders</ListItemContent>
+                <ListItemContent>Users</ListItemContent>
               </ListItemButton>
             </Link>
           </ListItem>

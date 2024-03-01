@@ -32,11 +32,11 @@ export default function App() {
 
         <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route path="/dashboard/orders" element={<Orders />} />
+        <Route path="/dashboard/users" element={<Orders />} />
 
         <Route path="/dashboard/gallery" element={<Gallery />} />
 
-        <Route path="/dashboard/settings" element={<Settings />} />
+        <Route path="/dashboard/management" element={<Settings />} />
 
         <Route path="/dashboard/profile" element={<Profile />} />
 
