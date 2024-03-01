@@ -23,7 +23,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   const login = async (username: string, password: string) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/signin`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
