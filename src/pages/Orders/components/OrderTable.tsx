@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ColorPaletteProp } from '@mui/joy/styles';
 import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
@@ -33,189 +33,189 @@ import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
-
-const rows = [
-  {
-    id: 'INV-1234',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'O',
-      name: 'Olivia Ryhe',
-      email: 'olivia@email.com',
-    },
-  },
-  {
-    id: 'INV-1233',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'S',
-      name: 'Steve Hampton',
-      email: 'steve.hamp@email.com',
-    },
-  },
-  {
-    id: 'INV-1232',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'C',
-      name: 'Ciaran Murray',
-      email: 'ciaran.murray@email.com',
-    },
-  },
-  {
-    id: 'INV-1231',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'M',
-      name: 'Maria Macdonald',
-      email: 'maria.mc@email.com',
-    },
-  },
-  {
-    id: 'INV-1230',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'C',
-      name: 'Charles Fulton',
-      email: 'fulton@email.com',
-    },
-  },
-  {
-    id: 'INV-1229',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'J',
-      name: 'Jay Hooper',
-      email: 'hooper@email.com',
-    },
-  },
-  {
-    id: 'INV-1228',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'K',
-      name: 'Krystal Stevens',
-      email: 'k.stevens@email.com',
-    },
-  },
-  {
-    id: 'INV-1227',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'S',
-      name: 'Sachin Flynn',
-      email: 's.flyn@email.com',
-    },
-  },
-  {
-    id: 'INV-1226',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'B',
-      name: 'Bradley Rosales',
-      email: 'brad123@email.com',
-    },
-  },
-  {
-    id: 'INV-1234',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'O',
-      name: 'Olivia Ryhe',
-      email: 'olivia@email.com',
-    },
-  },
-  {
-    id: 'INV-1233',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'S',
-      name: 'Steve Hampton',
-      email: 'steve.hamp@email.com',
-    },
-  },
-  {
-    id: 'INV-1232',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'C',
-      name: 'Ciaran Murray',
-      email: 'ciaran.murray@email.com',
-    },
-  },
-  {
-    id: 'INV-1231',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'M',
-      name: 'Maria Macdonald',
-      email: 'maria.mc@email.com',
-    },
-  },
-  {
-    id: 'INV-1230',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'C',
-      name: 'Charles Fulton',
-      email: 'fulton@email.com',
-    },
-  },
-  {
-    id: 'INV-1229',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'J',
-      name: 'Jay Hooper',
-      email: 'hooper@email.com',
-    },
-  },
-  {
-    id: 'INV-1228',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'K',
-      name: 'Krystal Stevens',
-      email: 'k.stevens@email.com',
-    },
-  },
-  {
-    id: 'INV-1227',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'S',
-      name: 'Sachin Flynn',
-      email: 's.flyn@email.com',
-    },
-  },
-  {
-    id: 'INV-1226',
-    date: 'Feb 3, 2023',
-    status: 'Cancelled',
-    customer: {
-      initial: 'B',
-      name: 'Bradley Rosales',
-      email: 'brad123@email.com',
-    },
-  },
-];
+import { getUsers } from '../../../utils/users';
+// const rows = [
+//   {
+//     id: 'INV-1234',
+//     date: 'Feb 3, 2023',
+//     status: 'Refunded',
+//     customer: {
+//       initial: 'O',
+//       name: 'Olivia Ryhe',
+//       email: 'olivia@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1233',
+//     date: 'Feb 3, 2023',
+//     status: 'Paid',
+//     customer: {
+//       initial: 'S',
+//       name: 'Steve Hampton',
+//       email: 'steve.hamp@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1232',
+//     date: 'Feb 3, 2023',
+//     status: 'Refunded',
+//     customer: {
+//       initial: 'C',
+//       name: 'Ciaran Murray',
+//       email: 'ciaran.murray@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1231',
+//     date: 'Feb 3, 2023',
+//     status: 'Refunded',
+//     customer: {
+//       initial: 'M',
+//       name: 'Maria Macdonald',
+//       email: 'maria.mc@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1230',
+//     date: 'Feb 3, 2023',
+//     status: 'Cancelled',
+//     customer: {
+//       initial: 'C',
+//       name: 'Charles Fulton',
+//       email: 'fulton@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1229',
+//     date: 'Feb 3, 2023',
+//     status: 'Cancelled',
+//     customer: {
+//       initial: 'J',
+//       name: 'Jay Hooper',
+//       email: 'hooper@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1228',
+//     date: 'Feb 3, 2023',
+//     status: 'Refunded',
+//     customer: {
+//       initial: 'K',
+//       name: 'Krystal Stevens',
+//       email: 'k.stevens@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1227',
+//     date: 'Feb 3, 2023',
+//     status: 'Paid',
+//     customer: {
+//       initial: 'S',
+//       name: 'Sachin Flynn',
+//       email: 's.flyn@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1226',
+//     date: 'Feb 3, 2023',
+//     status: 'Cancelled',
+//     customer: {
+//       initial: 'B',
+//       name: 'Bradley Rosales',
+//       email: 'brad123@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1234',
+//     date: 'Feb 3, 2023',
+//     status: 'Paid',
+//     customer: {
+//       initial: 'O',
+//       name: 'Olivia Ryhe',
+//       email: 'olivia@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1233',
+//     date: 'Feb 3, 2023',
+//     status: 'Cancelled',
+//     customer: {
+//       initial: 'S',
+//       name: 'Steve Hampton',
+//       email: 'steve.hamp@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1232',
+//     date: 'Feb 3, 2023',
+//     status: 'Paid',
+//     customer: {
+//       initial: 'C',
+//       name: 'Ciaran Murray',
+//       email: 'ciaran.murray@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1231',
+//     date: 'Feb 3, 2023',
+//     status: 'Refunded',
+//     customer: {
+//       initial: 'M',
+//       name: 'Maria Macdonald',
+//       email: 'maria.mc@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1230',
+//     date: 'Feb 3, 2023',
+//     status: 'Paid',
+//     customer: {
+//       initial: 'C',
+//       name: 'Charles Fulton',
+//       email: 'fulton@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1229',
+//     date: 'Feb 3, 2023',
+//     status: 'Cancelled',
+//     customer: {
+//       initial: 'J',
+//       name: 'Jay Hooper',
+//       email: 'hooper@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1228',
+//     date: 'Feb 3, 2023',
+//     status: 'Cancelled',
+//     customer: {
+//       initial: 'K',
+//       name: 'Krystal Stevens',
+//       email: 'k.stevens@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1227',
+//     date: 'Feb 3, 2023',
+//     status: 'Paid',
+//     customer: {
+//       initial: 'S',
+//       name: 'Sachin Flynn',
+//       email: 's.flyn@email.com',
+//     },
+//   },
+//   {
+//     id: 'INV-1226',
+//     date: 'Feb 3, 2023',
+//     status: 'Cancelled',
+//     customer: {
+//       initial: 'B',
+//       name: 'Bradley Rosales',
+//       email: 'brad123@email.com',
+//     },
+//   },
+// ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -284,6 +284,8 @@ export default function OrderTable() {
   const [order, setOrder] = useState<Order>('desc');
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [open, setOpen] = useState(false);
+  const [users, setUsers] = useState<any[]>([]);
+
   const renderFilters = () => (
     <>
       <FormControl size="sm">
@@ -324,9 +326,17 @@ export default function OrderTable() {
       </FormControl>
     </>
   );
+
+  useEffect(() => {
+    (async () => {
+      const users = await getUsers()
+      setUsers(users)
+    })()
+  }, [])
+
   return (
     <>
-      <Sheet
+      {/* <Sheet
         className="SearchAndFilters-mobile"
         sx={{
           display: {
@@ -366,7 +376,7 @@ export default function OrderTable() {
             </Sheet>
           </ModalDialog>
         </Modal>
-      </Sheet>
+      </Sheet> */}
       <Box
         className="SearchAndFilters-tabletUp"
         sx={{
@@ -387,14 +397,14 @@ export default function OrderTable() {
         }}
       >
         <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Search for order</FormLabel>
+          <FormLabel>Search for user</FormLabel>
           <Input
             size="sm"
             placeholder="Search"
             startDecorator={<SearchIcon />}
           />
         </FormControl>
-        {renderFilters()}
+        {/* {renderFilters()} */}
       </Box>
       <Sheet
         className="OrderTableContainer"
@@ -427,7 +437,7 @@ export default function OrderTable() {
               <th
                 style={{ width: 48, textAlign: 'center', padding: '12px 6px' }}
               >
-                <Checkbox
+                {/* <Checkbox
                   size="sm"
                   indeterminate={
                     selected.length > 0 && selected.length !== rows.length
@@ -444,7 +454,8 @@ export default function OrderTable() {
                       : undefined
                   }
                   sx={{ verticalAlign: 'text-bottom' }}
-                />
+                /> */}
+                ID
               </th>
               <th style={{ width: 120, padding: '12px 6px' }}>
                 <Link
@@ -462,20 +473,23 @@ export default function OrderTable() {
                     },
                   }}
                 >
-                  Invoice
+                  Username
                 </Link>
               </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>Date</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>Status</th>
-              <th style={{ width: 240, padding: '12px 6px' }}>Customer</th>
-              <th style={{ width: 140, padding: '12px 6px' }}> </th>
+              <th style={{ width: 140, padding: '12px 6px' }}>Email</th>
+              <th style={{ width: 140, padding: '12px 6px' }}>Roles</th>
+              {/* <th style={{ width: 240, padding: '12px 6px' }}>Customer</th>
+              <th style={{ width: 140, padding: '12px 6px' }}> </th> */}
             </tr>
           </thead>
           <tbody>
-            {stableSort(rows, getComparator(order, 'id')).map((row) => (
-              <tr key={row.id}>
-                <td style={{ textAlign: 'center', width: 120 }}>
-                  <Checkbox
+            {
+              users &&
+              //stableSort(users, getComparator(order, 'id'))
+              users.map((row) => (
+                <tr key={row.id}>
+                  <td style={{ textAlign: 'center', width: 120 }}>
+                    {/* <Checkbox
                     size="sm"
                     checked={selected.includes(row.id)}
                     color={selected.includes(row.id) ? 'primary' : undefined}
@@ -488,37 +502,43 @@ export default function OrderTable() {
                     }}
                     slotProps={{ checkbox: { sx: { textAlign: 'left' } } }}
                     sx={{ verticalAlign: 'text-bottom' }}
-                  />
-                </td>
-                <td>
-                  <Typography level="body-xs">{row.id}</Typography>
-                </td>
-                <td>
-                  <Typography level="body-xs">{row.date}</Typography>
-                </td>
-                <td>
-                  <Chip
-                    variant="soft"
-                    size="sm"
-                    startDecorator={
-                      {
-                        Paid: <CheckRoundedIcon />,
-                        Refunded: <AutorenewRoundedIcon />,
-                        Cancelled: <BlockIcon />,
-                      }[row.status]
+                  /> */}
+                    {row.id}
+                  </td>
+                  <td>
+                    <Typography level="body-xs">{row.username}</Typography>
+                  </td>
+                  <td>
+                    <Typography level="body-xs">{row.email}</Typography>
+                  </td>
+                  <td>
+                    {row.roles.map((role: string) => (
+
+                      <Chip
+                        variant="soft"
+                        size="sm"
+                        startDecorator={
+                          {
+                            user: <CheckRoundedIcon />,
+                            moderator: <AutorenewRoundedIcon />,
+                            admin: <BlockIcon />,
+                          }[role]
+                        }
+                        color={
+                          {
+                            user: 'success',
+                            moderator: 'neutral',
+                            admin: 'danger',
+                          }[role] as ColorPaletteProp
+                        }
+                      >
+                        {role}
+                      </Chip>
+                    ))
                     }
-                    color={
-                      {
-                        Paid: 'success',
-                        Refunded: 'neutral',
-                        Cancelled: 'danger',
-                      }[row.status] as ColorPaletteProp
-                    }
-                  >
-                    {row.status}
-                  </Chip>
-                </td>
-                <td>
+
+                  </td>
+                  {/* <td>
                   <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     <Avatar size="sm">{row.customer.initial}</Avatar>
                     <div>
@@ -530,21 +550,21 @@ export default function OrderTable() {
                       </Typography>
                     </div>
                   </Box>
-                </td>
-                <td>
+                </td> */}
+                  {/* <td>
                   <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     <Link level="body-xs" component="button">
                       Download
                     </Link>
                     <RowMenu />
                   </Box>
-                </td>
-              </tr>
-            ))}
+                </td> */}
+                </tr>
+              ))}
           </tbody>
         </Table>
       </Sheet>
-      <Box
+      {/* <Box
         className="Pagination-laptopUp"
         sx={{
           pt: 2,
@@ -586,7 +606,7 @@ export default function OrderTable() {
         >
           Next
         </Button>
-      </Box>
+      </Box> */}
     </>
   );
 }
