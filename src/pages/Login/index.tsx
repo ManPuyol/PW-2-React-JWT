@@ -8,6 +8,7 @@ import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import OuterLayout from '../../layouts/OuterLayout';
 import { useNavigate  } from "react-router-dom";
+import axios from 'axios';
 
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
@@ -23,13 +24,16 @@ export default function Login() {
   const navigate = useNavigate();
 
   const login = async (username: string, password: string) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signin`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
+
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/signin`, 
+      { username, password },
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
   
     if (response.status === 200) {
       navigate("/dashboard/profile");

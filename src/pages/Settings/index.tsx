@@ -20,8 +20,12 @@ export default function Settings() {
 
   useEffect(() => {
     (async () => {
-      const users = await getUsers()
-      setUsers(users)
+      try {
+        const users = await getUsers();
+        setUsers(users);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+      }
     })()
   }, [])
 
