@@ -7,8 +7,9 @@ import Link from '@mui/joy/Link';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import OuterLayout from '../../layouts/OuterLayout';
-import { useNavigate  } from "react-router-dom";
-import axios from 'axios';
+import { login } from '../../utils/auth';
+import { useNavigate } from "react-router-dom";
+
 
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
@@ -23,25 +24,6 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  const login = async (username: string, password: string) => {
-
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/signin`, 
-      { username, password },
-      {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-  
-    if (response.status === 200) {
-      navigate("/profile");
-    } else {
-      console.error('Error de inicio de sesión');
-    }
-  }
-
   const handleSubmit = async (event: React.FormEvent<SignInFormElement>) => {
     event.preventDefault();
 
@@ -50,7 +32,12 @@ export default function Login() {
     const password = formElements.password.value;
 
     try {
-      await login(username, password);
+      const response = await login(username, password);
+      if (response.status === 200) {
+        navigate("/profile");
+      } else {
+        console.error('Error de inicio de sesión');
+      }
     } catch (error) {
       console.error('Error de red', error);
     }
@@ -103,14 +90,14 @@ export default function Login() {
               name="password"
             />
           </FormControl>
-            <Button type="submit" fullWidth color="primary">
-              Log in
-            </Button>
+          <Button type="submit" fullWidth color="primary">
+            Log in
+          </Button>
         </form>
         <Link fontSize="sm" href="/sign-up" fontWeight="lg" mr="auto">
-            Crear una cuenta
+          Crear una cuenta
         </Link>
-      </Box> 
+      </Box>
       <Box component="footer" sx={{ py: 3 }}>
         <Typography level="body-xs" textAlign="center">
           © Your company {new Date().getFullYear()}
