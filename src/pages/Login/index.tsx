@@ -7,11 +7,11 @@ import Link from '@mui/joy/Link';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import OuterLayout from '../../layouts/OuterLayout';
-import { login } from '../../utils/auth';
+import { handleToken, login } from '../../utils/auth';
 import { useNavigate } from "react-router-dom";
 
-
 interface FormElements extends HTMLFormControlsCollection {
+  username: any;
   email: HTMLInputElement;
   password: HTMLInputElement;
   persistent: HTMLInputElement;
@@ -35,6 +35,7 @@ export default function Login() {
       const response = await login(username, password);
       if (response.status === 200) {
         navigate("/profile");
+        handleToken(response);
       } else {
         console.error('Error de inicio de sesión');
       }

@@ -8,7 +8,7 @@ import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import OuterLayout from '../../layouts/OuterLayout';
 import { useNavigate  } from "react-router-dom";
-import { login, register } from '../../utils/auth';
+import { handleToken, login, register } from '../../utils/auth';
 
 interface FormElements extends HTMLFormControlsCollection {
   username: HTMLInputElement;
@@ -48,8 +48,8 @@ export default function Register() {
         console.error('Login failed');
         return;
       }
-  
       navigate("/profile");
+      handleToken(loginResponse);
     } catch (error) {
       console.error('Network error', error);
     }
