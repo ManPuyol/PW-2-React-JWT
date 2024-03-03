@@ -12,7 +12,12 @@ import MuiLogo from '../../assets/icons/MuiLogo';
 import { Link } from 'react-router-dom';
 import { IconButton } from '@mui/joy';
 
+import { UserContext } from '../../hooks/userContext';
+import {useContext} from 'react';
+
 export default function FirstSidebar() {
+  const { user } = useContext(UserContext) || {};
+
   return (
     <Sheet
       className="FirstSidebar"
@@ -55,20 +60,20 @@ export default function FirstSidebar() {
             </IconButton>
           </Link>
         </ListItem>
-        <ListItem>
+        {user?.roles.includes("ROLE_MODERATOR") && <ListItem>
           <Link to="/users">
             <IconButton size="lg">
               <ViewListIcon />
             </IconButton>
           </Link>
-        </ListItem>
-        <ListItem>
+        </ListItem>}
+        {user?.roles.includes("ROLE_ADMIN") && <ListItem>
           <Link to="/management">
             <IconButton size="lg">
               <SettingsRoundedIcon />
             </IconButton>
           </Link>
-        </ListItem>
+        </ListItem>}
       </List>
       <List
         sx={{

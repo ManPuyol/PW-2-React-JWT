@@ -9,6 +9,9 @@ import Typography from '@mui/joy/Typography';
 import OuterLayout from '../../layouts/OuterLayout';
 import { handleToken, login } from '../../utils/auth';
 import { useNavigate } from "react-router-dom";
+import { UserContext } from '../../hooks/userContext';
+import { Email } from '@mui/icons-material';
+
 
 interface FormElements extends HTMLFormControlsCollection {
   username: any;
@@ -23,6 +26,7 @@ interface SignInFormElement extends HTMLFormElement {
 export default function Login() {
 
   const navigate = useNavigate();
+  const { setUser } = React.useContext(UserContext) || {};
 
   const handleSubmit = async (event: React.FormEvent<SignInFormElement>) => {
     event.preventDefault();
@@ -36,6 +40,13 @@ export default function Login() {
       if (response.status === 200) {
         navigate("/profile");
         handleToken(response);
+        if (setUser) {
+          setUser({
+            username: response.data.username,
+            email: response.data.email,
+            roles: response.data.roles
+          });
+        }
       } else {
         console.error('Error de inicio de sesión');
       }
