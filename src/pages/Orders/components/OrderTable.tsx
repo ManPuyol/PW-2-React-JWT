@@ -28,6 +28,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
 import BlockIcon from '@mui/icons-material/Block';
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -524,7 +525,7 @@ export default function OrderTable() {
                         startDecorator={
                           {
                             user: <CheckRoundedIcon />,
-                            moderator: <AutorenewRoundedIcon />,
+                            moderator: <ShieldRoundedIcon />,
                             admin: <BlockIcon />,
                           }[role]
                         }

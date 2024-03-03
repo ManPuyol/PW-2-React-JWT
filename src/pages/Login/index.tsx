@@ -36,7 +36,7 @@ export default function Login() {
     );
   
     if (response.status === 200) {
-      navigate("/dashboard/profile");
+      navigate("/profile");
     } else {
       console.error('Error de inicio de sesión');
     }
