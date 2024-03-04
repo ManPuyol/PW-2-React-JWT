@@ -9,6 +9,7 @@ import Typography from '@mui/joy/Typography';
 import OuterLayout from '../../layouts/OuterLayout';
 import { useNavigate  } from "react-router-dom";
 import { handleToken, login, register } from '../../utils/auth';
+import { UserContext } from '../../hooks/userContext';
 
 interface FormElements extends HTMLFormControlsCollection {
   username: HTMLInputElement;
@@ -23,6 +24,8 @@ interface SignInFormElement extends HTMLFormElement {
 export default function Register() {
 
   const navigate = useNavigate();
+  const { setUser } = React.useContext(UserContext) || {};
+
 
   const handleSubmit = async (event: React.FormEvent<SignInFormElement>) => {
     event.preventDefault();
@@ -50,6 +53,14 @@ export default function Register() {
       }
       navigate("/profile");
       handleToken(loginResponse);
+      if (setUser) {
+        setUser({
+          id: loginResponse.data.id,
+          username: loginResponse.data.username,
+          email: loginResponse.data.email,
+          roles: loginResponse.data.roles
+        });
+      }
     } catch (error) {
       console.error('Network error', error);
     }

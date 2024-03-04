@@ -60,14 +60,14 @@ export default function FirstSidebar() {
             </IconButton>
           </Link>
         </ListItem>
-        {user?.roles.includes("ROLE_MODERATOR") && <ListItem>
+        {user?.roles?.includes("ROLE_MODERATOR") && <ListItem>
           <Link to="/users">
             <IconButton size="lg">
               <ViewListIcon />
             </IconButton>
           </Link>
         </ListItem>}
-        {user?.roles.includes("ROLE_ADMIN") && <ListItem>
+        {user?.roles?.includes("ROLE_ADMIN") && <ListItem>
           <Link to="/management">
             <IconButton size="lg">
               <SettingsRoundedIcon />

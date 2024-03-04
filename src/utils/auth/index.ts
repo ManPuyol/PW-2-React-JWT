@@ -37,5 +37,5 @@ export const handleToken = (response: AxiosResponse<any, any>) => {
         setTimeout(() => {
             localStorage.removeItem('x-access-token');
             window.location.href = "/";
-        }, response.data.expiresIn);
+        }, response.data.expiresIn * 1000);
     }

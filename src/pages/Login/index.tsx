@@ -42,6 +42,7 @@ export default function Login() {
         handleToken(response);
         if (setUser) {
           setUser({
+            id: response.data.id,
             username: response.data.username,
             email: response.data.email,
             roles: response.data.roles

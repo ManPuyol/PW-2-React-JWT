@@ -19,9 +19,32 @@ import DropZone from './DropZone';
 import FileUpload from './FileUpload';
 import CountrySelector from './CountrySelector';
 import EditorToolbar from './EditorToolbar';
+import { UserContext } from '../../../hooks/userContext';
+import { FormEvent, useContext, useRef } from 'react';
+import { changePassword } from '../../../utils/profile';
 
 export default function MyProfile() {
+  const { user } = useContext(UserContext) || {};
+  const passwdForm = useRef<HTMLFormElement>(null);
 
+  async function handleSubmit(event: FormEvent<HTMLFormElement> | any): Promise<void> {
+    event.preventDefault();
+    const password = passwdForm.current?.elements['password']?.value;
+    const rePassword = passwdForm.current?.elements['re_password']?.value;
+
+    if (password != rePassword || password == '') return alert("Invalid passwords")
+
+    try {
+      const response = await changePassword( user?.email, password)
+      if (response.status === 200) {
+        alert("Password updated")
+      } else {
+        console.error(response.status);
+      }
+    } catch (error) {
+      console.error('Error de red', error);
+    }
+  }
 
   return (
     <Box
@@ -125,7 +148,7 @@ export default function MyProfile() {
           </FormLabel>
           <Box sx={{ display: { sm: 'contents' } }}>
             <FormControl sx={{ flex: 1 }}>
-              <Input placeholder="username" defaultValue="Siriwat" />
+              <Input disabled placeholder="username" defaultValue={user?.username} />
             </FormControl>
           </Box>
           <Divider role="presentation" />
@@ -133,61 +156,51 @@ export default function MyProfile() {
             <FormLabel>Email</FormLabel>
             <Input
               type="email"
-              //startDecorator={<i data-feather="mail" />}
+              startDecorator={<i data-feather="mail" />}
+              disabled
               placeholder="email"
-              defaultValue="siriwatk@test.com"
+              defaultValue={user?.email}
             />
           </FormControl>
-
-
           <Divider role="presentation" />
           <div>
             <FormLabel>Roles</FormLabel>
           </div>
-          <div>
-            <Chip
-              variant="outlined"
-              color="primary"
-              size="md"
-              sx={{ borderRadius: 'sm' }}
-            >
-              Illustration
-            </Chip>
-            <Chip
-              variant="outlined"
-              color="neutral"
-              size="md"
-              sx={{ borderRadius: 'sm' }}
-            >
-              Illustration
-            </Chip>
-            <Chip
-              variant="outlined"
-              color="success"
-              size="md"
-              sx={{ borderRadius: 'sm' }}
-            >
-              Illustration
-            </Chip>
-          </div>
+          <Box sx={{ display: { xs: 'flex', sm: 'flex' }, gap: 2 }}>
+            {user?.roles?.map((role: 'ROLE_USER' | 'ROLE_MODERATOR' | 'ROLE_ADMIN') => (
+              <Chip
+                variant="soft"
+                color="primary"
+                size="md"
+                sx={{ borderRadius: 'sm' }}
+                key={role}
+              >
+                {{
+                  'ROLE_ADMIN': 'Admin',
+                  'ROLE_MODERATOR': 'Moderator',
+                  'ROLE_USER': 'User'
+                }[role]}
+              </Chip>
+            ))}
+          </Box>
           <Divider role="presentation" />
-          {/* <CountrySelector />
-          <Divider role="presentation" /> */}
-             <FormLabel sx={{ display: { xs: 'none', sm: 'block' } }}>
-              Update Password
-            </FormLabel>
+
+          <FormLabel sx={{ display: { xs: 'none', sm: 'block' } }}>
+            Update Password
+          </FormLabel>
+          <form ref={passwdForm} onSubmit={handleSubmit}>
             <Box sx={{ display: { xs: 'contents', sm: 'flex' }, gap: 2 }}>
               <FormControl sx={{ flex: 1 }}>
                 <FormLabel>New Password</FormLabel>
-                <Input placeholder="Password" type="password" />
+                <Input placeholder="Password" type="password" name="password" required/>
               </FormControl>
               <FormControl sx={{ flex: 1 }}>
                 <FormLabel>Confirm Password</FormLabel>
-                <Input placeholder="Confirm" type="password" />
+                <Input placeholder="Confirm" type="password" name="re_password"/>
               </FormControl>
             </Box>
+          </form>
           <Divider role="presentation" />
-
           <Box
             sx={{
               gridColumn: '1/-1',
@@ -196,10 +209,7 @@ export default function MyProfile() {
               gap: 1,
             }}
           >
-            <Button variant="outlined" color="neutral" size="sm">
-              Cancel
-            </Button>
-            <Button size="sm">Save</Button>
+            <Button onClick={handleSubmit} size="sm">Change password</Button>
           </Box>
         </Box>
       </Tabs>

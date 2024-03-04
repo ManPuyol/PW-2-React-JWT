@@ -382,7 +382,7 @@ export default function OrderTable() {
           </ModalDialog>
         </Modal>
       </Sheet> */}
-      <Box
+      {/* <Box
         className="SearchAndFilters-tabletUp"
         sx={{
           borderRadius: 'sm',
@@ -409,8 +409,8 @@ export default function OrderTable() {
             startDecorator={<SearchIcon />}
           />
         </FormControl>
-        {/* {renderFilters()} */}
-      </Box>
+        {renderFilters()}
+      </Box> */}
       <Sheet
         className="OrderTableContainer"
         variant="outlined"

@@ -7,7 +7,7 @@ export default function Orders() {
   return (
     <InnerLayout>
       <OrderTable />
-      <OrderList />
+      {/* <OrderList /> */}
     </InnerLayout>
   );
 }
