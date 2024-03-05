@@ -14,6 +14,7 @@ import { IconButton } from '@mui/joy';
 
 import { UserContext } from '../../hooks/userContext';
 import {useContext} from 'react';
+import { removeToken } from '../../utils/auth';
 
 export default function FirstSidebar() {
   const { user } = useContext(UserContext) || {};
@@ -84,7 +85,7 @@ export default function FirstSidebar() {
         }}
       >
         <ListItem>
-          <Link to="/sign-in">
+          <Link onClick={removeToken} to="/sign-in">
             <IconButton size="lg">
               <LogoutIcon />
             </IconButton>

@@ -1,27 +1,17 @@
-import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
 import Chip, { chipClasses } from '@mui/joy/Chip';
 import Divider from '@mui/joy/Divider';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
-import FormHelperText from '@mui/joy/FormHelperText';
 import Input from '@mui/joy/Input';
-import Textarea from '@mui/joy/Textarea';
-import Stack from '@mui/joy/Stack';
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
-import Typography from '@mui/joy/Typography';
 import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab, { tabClasses } from '@mui/joy/Tab';
-import DropZone from './DropZone';
-import FileUpload from './FileUpload';
-import CountrySelector from './CountrySelector';
-import EditorToolbar from './EditorToolbar';
 import { UserContext } from '../../../hooks/userContext';
 import { FormEvent, useContext, useRef } from 'react';
 import { changePassword } from '../../../utils/profile';
+import AlternateEmailRoundedIcon from '@mui/icons-material/AlternateEmailRounded';
 
 export default function MyProfile() {
   const { user } = useContext(UserContext) || {};
@@ -156,7 +146,7 @@ export default function MyProfile() {
             <FormLabel>Email</FormLabel>
             <Input
               type="email"
-              startDecorator={<i data-feather="mail" />}
+              startDecorator={<AlternateEmailRoundedIcon fontSize='small' />}
               disabled
               placeholder="email"
               defaultValue={user?.email}
@@ -167,7 +157,7 @@ export default function MyProfile() {
             <FormLabel>Roles</FormLabel>
           </div>
           <Box sx={{ display: { xs: 'flex', sm: 'flex' }, gap: 2 }}>
-            {user?.roles?.map((role: 'ROLE_USER' | 'ROLE_MODERATOR' | 'ROLE_ADMIN') => (
+            {user?.roles?.map((role: string) => (
               <Chip
                 variant="soft"
                 color="primary"

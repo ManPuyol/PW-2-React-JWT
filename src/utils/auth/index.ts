@@ -32,10 +32,19 @@ export const register = async (username: string, email: string, password: string
     });
 }
 
+export const removeToken = (): void => {
+    localStorage.removeItem('x-access-token');
+    //remove cookie with the same name
+    document.cookie = 'x-access-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  }
+
 export const handleToken = (response: AxiosResponse<any, any>) => {
         localStorage.setItem('x-access-token', response.data.accessToken);
         setTimeout(() => {
-            localStorage.removeItem('x-access-token');
-            window.location.href = "/";
+            alert("expired token");
+            removeToken()
+            window.location.href = "/sign-in";
         }, response.data.expiresIn * 1000);
     }
+
+

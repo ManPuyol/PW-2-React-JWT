@@ -10,7 +10,6 @@ import OuterLayout from '../../layouts/OuterLayout';
 import { handleToken, login } from '../../utils/auth';
 import { useNavigate } from "react-router-dom";
 import { UserContext } from '../../hooks/userContext';
-import { Email } from '@mui/icons-material';
 
 
 interface FormElements extends HTMLFormControlsCollection {
@@ -42,7 +41,6 @@ export default function Login() {
         handleToken(response);
         if (setUser) {
           setUser({
-            id: response.data.id,
             username: response.data.username,
             email: response.data.email,
             roles: response.data.roles
