@@ -202,6 +202,7 @@ const { user } = useContext(UserContext);
 ### Front
     
 ```bash
+npm install
 npm run dev
 ```
 ## Backend
@@ -215,5 +216,6 @@ Para iniciar la el servidor la primera vez es importante poner las credenciales 
 Posteriormente ejecuta:
     
 ```bash
+npm install
 node server.js
 ```
