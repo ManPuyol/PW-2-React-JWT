@@ -1,22 +1,17 @@
 import { useEffect, useState } from 'react';
 import { ColorPaletteProp } from '@mui/joy/styles';
 import Chip from '@mui/joy/Chip';
-import Link from '@mui/joy/Link';
 import Table from '@mui/joy/Table';
 import Sheet from '@mui/joy/Sheet';
 import Typography from '@mui/joy/Typography';
 // icons
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
 import { getUsers } from '../../../utils/users';
 
 
-type Order = 'asc' | 'desc';
-
 export default function OrderTable() {
-  const [order, setOrder] = useState<Order>('desc');
   const [users, setUsers] = useState<any[]>([]);
 
   useEffect(() => {
@@ -66,23 +61,7 @@ export default function OrderTable() {
                 ID
               </th>
               <th style={{ width: 120, padding: '12px 6px' }}>
-                <Link
-                  underline="none"
-                  color="primary"
-                  component="button"
-                  onClick={() => setOrder(order === 'asc' ? 'desc' : 'asc')}
-                  fontWeight="lg"
-                  endDecorator={<ArrowDropDownIcon />}
-                  sx={{
-                    '& svg': {
-                      transition: '0.2s',
-                      transform:
-                        order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
-                    },
-                  }}
-                >
                   Username
-                </Link>
               </th>
               <th style={{ width: 140, padding: '12px 6px' }}>Email</th>
               <th style={{ width: 140, padding: '12px 6px' }}>Roles</th>

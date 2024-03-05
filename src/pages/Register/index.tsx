@@ -55,7 +55,6 @@ export default function Register() {
       handleToken(loginResponse);
       if (setUser) {
         setUser({
-          id: loginResponse.data.id,
           username: loginResponse.data.username,
           email: loginResponse.data.email,
           roles: loginResponse.data.roles

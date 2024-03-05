@@ -54,12 +54,8 @@ export default function App() {
           
           <Route path="/profile" element={<Profile />} />
 
-          {/* {user?.roles?.includes("ROLE_MODERATOR") && 
-          } */}
           <Route path="/users" element={<Orders />} />
 
-          {/* {user?.roles?.includes("ROLE_ADMIN") && 
-          } */}
           <Route path="/management" element={<Settings />} />
 
           <Route path={`*`} element={<Navigate to="/sign-in" replace />} />

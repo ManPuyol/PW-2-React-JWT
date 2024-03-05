@@ -1,6 +1,18 @@
-# Nombre de la Aplicación
+# Gestion de roles de usuario
 
-Descripción general de la aplicación.
+El sistema cuenta con 3 secciones accesibles en el sidebar:
+1. Perfil
+2. Usuarios
+3. Manejo de roles
+
+Los usuarios dependiendo de su rol podran:
+
+| Accion | Administrador | Moderador | Usuario |
+| ------ | ------ | ------ | ------ |
+| Ver y editar perfil | ✅ | ✅ | ✅ |
+| Listar usuarios | ✅ | ✅ | ❌ |
+| Modificar roles | ✅ | ❌ | ❌ |
+
 
 ## Gestión de Rutas
 
@@ -9,50 +21,114 @@ La aplicación utiliza `react-router-dom` para la gestión de rutas. Las rutas s
 Aquí hay un ejemplo de cómo se definen las rutas:
 
 ```typescript
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 
-<Router>
-    <Switch>
-        <Route path="/about">
-            <About />
-        </Route>
-        <Route path="/users">
-            <Users />
-        </Route>
-        <Route path="/">
-            <Home />
-        </Route>
-    </Switch>
-</Router>
+//...
+
+<Routes key={location.pathname} location={location}>
+
+    <Route path="/sign-in" element={<Login />} />
+
+    <Route path="/sign-up" element={<Register />} />
+    
+    <Route path="/profile" element={<Profile />} />
+
+    <Route path="/users" element={<Orders />} />
+
+    <Route path="/management" element={<Settings />} />
+
+    <Route path={`*`} element={<Navigate to="/sign-in" replace />} />
+</Routes>
 ```
 Cada `Route` representa una página en la aplicación. El componente que se renderiza para esa página se especifica como hijo de `Route`.
 
 ## Gestión de Estado
-La aplicación utiliza `React Context` y `useState` para la gestión de estado.
+La aplicación utiliza `React Context` , `useRef` y `useState` para la gestión de estado. `React Context` se utiliza para compartir la informacion del **usuario** entre componentes sin tener que pasar props manualmente a través de cada nivel de la jerarquía de componentes. Se define en  `src\hooks\userContext.ts` se cargan los datos en el login y se usa principalmente en el sidebar para mostrar o no los modulos a los que se puede acceder
 
-Aquí hay un ejemplo de cómo se crea un contexto y se utiliza para almacenar el estado del usuario:
-
+### Login/index.tsx
 ```typescript
-import React, { createContext, useState, useContext } from 'react';
+import { UserContext } from '../../hooks/userContext';
 
-// Crear el contexto
-const UserContext = createContext(null);
+//...
 
-// Proveedor de contexto que almacena el estado del usuario
-export const UserProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+  const { setUser } = React.useContext(UserContext) || {};
 
-    return (
-        <UserContext.Provider value={{ user, setUser }}>
-            {children}
-        </UserContext.Provider>
-    );
-};
+//...
 
-// Hook personalizado para usar el contexto del usuario
-export const useUser = () => useContext(UserContext);
+    if (setUser) {
+        setUser({
+        username: response.data.username,
+        email: response.data.email,
+        roles: response.data.roles
+        });
+    }
+
+// ...
+
 ```
 
+### FirstSidebar.tsx
+```typescript
+import { UserContext } from '../../hooks/userContext';
+
+//...
+
+const { user } = useContext(UserContext);
+
+//...
+
+        {user?.roles?.includes("ROLE_MODERATOR") && <ListItem>
+          <Link to="/users">
+            <IconButton size="lg">
+              <ViewListIcon />
+            </IconButton>
+          </Link>
+        </ListItem>}
+
+        {user?.roles?.includes("ROLE_ADMIN") && <ListItem>
+          <Link to="/management">
+            <IconButton size="lg">
+              <SettingsRoundedIcon />
+            </IconButton>
+          </Link>
+        </ListItem>}
+
+// ...
+
+```
+
+`useRef` y `useState` se utilizan para gestionar el estado local de los componentes dentro de los formularios y tablas. Por ejemplo en la tabla de usuarios se utiliza `useState` para almacenar los usuarios.
+
+### OrderTable.tsx
+```typescript
+//...
+
+  const [users, setUsers] = useState<any[]>([]);
+
+    useEffect(() => {
+        (async () => {
+        try {
+            const users = await getUsers();
+            setUsers(users);
+        } catch (error) {
+            console.error('Failed to fetch users:', error);
+        }
+        })()
+    }, [])
+
+  //...
+
+    {
+        users &&
+        users.map((row) => (
+            <tr key={row.id}>
+                  <td style={{ textAlign: 'center', width: 120 }}>
+                    {row.id}
+                  </td>
+                //...
+    )}
+
+```
 ## Iniciar la Aplicación
 Para iniciar la el front, ejecuta:
     
