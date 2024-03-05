@@ -9,8 +9,59 @@ import Input from '@mui/joy/Input';
 import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab, { tabClasses } from '@mui/joy/Tab';
+import { Option, Select } from '@mui/joy';
+import Checkbox from '@mui/joy/Checkbox';
+import { SetStateAction, useContext, useEffect, useState } from 'react';
+import { getUsers } from '../../utils/users';
+import { changeRoles } from '../../utils/manageRoles';
+import { UserContext } from '../../hooks/userContext';
 
 export default function Settings() {
+  const { user } = useContext(UserContext) || {};
+
+  const [users, setUsers] = useState<any[]>([]);
+  const [isAdmin, setAdmin] = useState(false);
+  const [isModerator, setModerator] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<string | number >("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const users = await getUsers();
+        setUsers(users);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+      }
+    })()
+  }, [])
+
+  useEffect(() => {
+    if (isAdmin) {
+      setModerator(true);
+    }
+  }, [isAdmin]);
+
+  const handleChange = (event, value) => {
+    setSelectedUser(value);
+  };
+
+  async function handleSubmit(): Promise<void> {
+		const roles = ["user"]
+		if (isModerator) roles.push("moderator")
+		if (isAdmin) roles.push("admin")
+
+    try {
+			const response = await changeRoles(selectedUser, roles)
+			if (response.status === 200) {
+				alert("User roles updated")
+			} else {
+				console.error(response.status);
+			}
+    } catch (error) {
+      console.error('Error de red', error);
+    }
+  }
+
   return (
     <InnerLayout>
       <Box
@@ -89,7 +140,7 @@ export default function Settings() {
             })}
           >
             <Tab indicatorInset value={0}>
-              Account Details
+              Roles
             </Tab>
           </TabList>
           <Box
@@ -109,45 +160,43 @@ export default function Settings() {
               },
             }}
           >
-            <Divider role="presentation" />
             <FormLabel sx={{ display: { xs: 'none', sm: 'block' } }}>
-              Account Login
+              Username
             </FormLabel>
             <Box sx={{ display: { xs: 'contents', sm: 'flex' }, gap: 2 }}>
               <FormControl sx={{ flex: 1 }}>
-                <FormLabel>Email Address</FormLabel>
-                <Input placeholder="Email" type="email" />
+                <FormLabel sx={{ display: { sm: 'none' } }}>Users</FormLabel>
+                <Select name="user" placeholder="User" onChange={handleChange}>
+                  {users.map((user) => (
+                    <Option value={user.id}>{user.username}</Option>
+                  ))}
+                </Select>
               </FormControl>
-              <FormControl sx={{ flex: 1 }}></FormControl>
             </Box>
+
             <Divider role="presentation" />
             <FormLabel sx={{ display: { xs: 'none', sm: 'block' } }}>
-              Data Usage
+              Roles
             </FormLabel>
             <Box sx={{ display: { xs: 'contents', sm: 'flex' }, gap: 2 }}>
-              <FormControl sx={{ flex: 1 }}>
-                <FormLabel>Total Files</FormLabel>
-                <Input placeholder="Files" type="number" />
-              </FormControl>
-              <FormControl sx={{ flex: 1 }}>
-                <FormLabel>Amount Stored</FormLabel>
-                <Input placeholder="Data" type="number" />
-              </FormControl>
+              <Checkbox
+                checked={isModerator}
+                onChange={(event) => setModerator(event.target.checked)}
+                name='moderator'
+                size="sm"
+                sx={{ verticalAlign: 'text-bottom' }}
+                label="Moderator"
+                />
+              <Checkbox
+                checked={isAdmin}
+                onChange={(event) => setAdmin(event.target.checked)}
+                name='admin'
+                size="sm"
+                sx={{ verticalAlign: 'text-bottom' }}
+                label="Admin"
+              />
             </Box>
             <Divider role="presentation" />
-            <FormLabel sx={{ display: { xs: 'none', sm: 'block' } }}>
-              Update Password
-            </FormLabel>
-            <Box sx={{ display: { xs: 'contents', sm: 'flex' }, gap: 2 }}>
-              <FormControl sx={{ flex: 1 }}>
-                <FormLabel>New Password</FormLabel>
-                <Input placeholder="Password" type="password" />
-              </FormControl>
-              <FormControl sx={{ flex: 1 }}>
-                <FormLabel>Confirm Password</FormLabel>
-                <Input placeholder="Confirm" type="password" />
-              </FormControl>
-            </Box>
             <Box
               sx={{
                 gridColumn: '1/-1',
@@ -159,7 +208,7 @@ export default function Settings() {
               <Button variant="outlined" color="neutral" size="sm">
                 Cancel
               </Button>
-              <Button size="sm">Save</Button>
+              <Button onClick={handleSubmit} size="sm">Save</Button>
             </Box>
           </Box>
         </Tabs>

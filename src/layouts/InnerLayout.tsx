@@ -7,15 +7,13 @@ import Typography from '@mui/joy/Typography';
 // icons
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-
 import FirstSidebar from './components/FirstSidebar';
-import SecondSidebar from './components/SecondSidebar';
 import Header from './components/Header';
 import ColorSchemeToggle from '../components/ColorSchemeToggle';
 import { Children } from '../types';
 
 export default function InnerLayout({ children }: Children) {
-  const pathname = window.location.pathname.split('/dashboard/')[1];
+  const pathname = window.location.pathname.split('/')[1];
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -23,7 +21,6 @@ export default function InnerLayout({ children }: Children) {
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
         <Header />
         <FirstSidebar />
-        <SecondSidebar />
         <Box
           component="main"
           className="MainContent"
@@ -59,17 +56,8 @@ export default function InnerLayout({ children }: Children) {
               aria-label="breadcrumbs"
               separator={<ChevronRightRoundedIcon />}
             >
-              <Link underline="none" color="neutral" href="/" aria-label="Home">
+              <Link underline="none" color="neutral" href="/profile" aria-label="Home">
                 <HomeRoundedIcon />
-              </Link>
-              <Link
-                underline="hover"
-                color="neutral"
-                href="/dashboard"
-                fontSize={12}
-                fontWeight={500}
-              >
-                Dashboard
               </Link>
               <Typography
                 color="primary"

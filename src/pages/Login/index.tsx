@@ -7,10 +7,13 @@ import Link from '@mui/joy/Link';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import OuterLayout from '../../layouts/OuterLayout';
-import GoogleIcon from '../../assets/icons/GoogleIcons';
-import { Checkbox } from '@mui/joy';
+import { handleToken, login } from '../../utils/auth';
+import { useNavigate } from "react-router-dom";
+import { UserContext } from '../../hooks/userContext';
+
 
 interface FormElements extends HTMLFormControlsCollection {
+  username: any;
   email: HTMLInputElement;
   password: HTMLInputElement;
   persistent: HTMLInputElement;
@@ -20,6 +23,37 @@ interface SignInFormElement extends HTMLFormElement {
 }
 
 export default function Login() {
+
+  const navigate = useNavigate();
+  const { setUser } = React.useContext(UserContext) || {};
+
+  const handleSubmit = async (event: React.FormEvent<SignInFormElement>) => {
+    event.preventDefault();
+
+    const formElements = event.currentTarget.elements;
+    const username = formElements.username.value;
+    const password = formElements.password.value;
+
+    try {
+      const response = await login(username, password);
+      if (response.status === 200) {
+        navigate("/profile");
+        handleToken(response);
+        if (setUser) {
+          setUser({
+            username: response.data.username,
+            email: response.data.email,
+            roles: response.data.roles
+          });
+        }
+      } else {
+        console.error('Error de inicio de sesión');
+      }
+    } catch (error) {
+      console.error('Error de red', error);
+    }
+  }
+
   return (
     <OuterLayout>
       <Box
@@ -54,59 +88,26 @@ export default function Login() {
           </Typography>
         </div>
         <form
-          onSubmit={(event: React.FormEvent<SignInFormElement>) => {
-            event.preventDefault();
-            const formElements = event.currentTarget.elements;
-            const data = {
-              email: formElements.email.value,
-              password: formElements.password.value,
-            };
-            alert(JSON.stringify(data, null, 2));
-          }}
+          onSubmit={handleSubmit}
         >
           <FormControl>
-            <FormLabel>Email</FormLabel>
-            <Input type="email" name="email" />
+            <FormLabel>Username</FormLabel>
+            <Input type="text" name="username" />
           </FormControl>
           <FormControl>
             <FormLabel>Password</FormLabel>
             <Input
               type="password"
               name="password"
-              slotProps={{ input: { minLength: 8 } }}
             />
           </FormControl>
-          <Checkbox size="sm" label="Remember for 30 days" name="persistent" />
-          <Link href="/dashboard">
-            <Button type="button" fullWidth color="primary">
-              Sign in
-            </Button>
-          </Link>
-        </form>
-        <Link href="/dashboard">
-          <Button
-            variant="outlined"
-            color="neutral"
-            fullWidth
-            startDecorator={<GoogleIcon />}
-          >
-            Sign in with Google
+          <Button type="submit" fullWidth color="primary">
+            Log in
           </Button>
+        </form>
+        <Link fontSize="sm" href="/sign-up" fontWeight="lg" mr="auto">
+          Crear una cuenta
         </Link>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Link fontSize="sm" href="/" fontWeight="lg" mr="auto">
-            Back to home
-          </Link>
-          <Link fontSize="sm" href="/forgot-password" fontWeight="lg" ml="auto">
-            Forgot your password?
-          </Link>
-        </Box>
       </Box>
       <Box component="footer" sx={{ py: 3 }}>
         <Typography level="body-xs" textAlign="center">

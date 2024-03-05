@@ -7,9 +7,12 @@ import Link from '@mui/joy/Link';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import OuterLayout from '../../layouts/OuterLayout';
-import GoogleIcon from '../../assets/icons/GoogleIcons';
+import { useNavigate  } from "react-router-dom";
+import { handleToken, login, register } from '../../utils/auth';
+import { UserContext } from '../../hooks/userContext';
 
 interface FormElements extends HTMLFormControlsCollection {
+  username: HTMLInputElement;
   email: HTMLInputElement;
   password: HTMLInputElement;
   confirm: HTMLInputElement;
@@ -19,6 +22,49 @@ interface SignInFormElement extends HTMLFormElement {
 }
 
 export default function Register() {
+
+  const navigate = useNavigate();
+  const { setUser } = React.useContext(UserContext) || {};
+
+
+  const handleSubmit = async (event: React.FormEvent<SignInFormElement>) => {
+    event.preventDefault();
+
+    const formElements = event.currentTarget.elements as FormElements;
+
+    const username = (formElements.username as HTMLInputElement).value;
+    const email = (formElements.email as HTMLInputElement).value;
+    const password = (formElements.password as HTMLInputElement).value;
+
+    try {
+      const registrationResponse = await register(username, email, password);
+      if (registrationResponse.status !== 200) {
+        console.error('Registration failed');
+        return;
+      }
+  
+      alert('Successfully registered');
+  
+      const loginResponse = await login(username, password);
+  
+      if (loginResponse.status !== 200) {
+        console.error('Login failed');
+        return;
+      }
+      navigate("/profile");
+      handleToken(loginResponse);
+      if (setUser) {
+        setUser({
+          username: loginResponse.data.username,
+          email: loginResponse.data.email,
+          roles: loginResponse.data.roles
+        });
+      }
+    } catch (error) {
+      console.error('Network error', error);
+    }
+  }
+
   return (
     <OuterLayout>
       <Box
@@ -53,21 +99,12 @@ export default function Register() {
           </Typography>
         </div>
         <form
-          onSubmit={(event: React.FormEvent<SignInFormElement>) => {
-            event.preventDefault();
-            const formElements = event.currentTarget.elements;
-            const data = {
-              email: formElements.email.value,
-              password: formElements.password.value,
-              confirm: formElements.confirm.value,
-            };
-            if (data.password !== data.confirm) {
-              alert("passwords don't match");
-            } else {
-              window.location.assign('/dashboard');
-            }
-          }}
+          onSubmit={handleSubmit}
         >
+          <FormControl>
+            <FormLabel>Username</FormLabel>
+            <Input type="text" name="username" />
+          </FormControl>
           <FormControl>
             <FormLabel>Email</FormLabel>
             <Input type="email" name="email" />
@@ -77,7 +114,6 @@ export default function Register() {
             <Input
               type="password"
               name="password"
-              slotProps={{ input: { minLength: 8 } }}
             />
           </FormControl>
           <FormControl>
@@ -85,7 +121,6 @@ export default function Register() {
             <Input
               type="password"
               name="confirm"
-              slotProps={{ input: { minLength: 8 } }}
             />
           </FormControl>
 
@@ -93,16 +128,6 @@ export default function Register() {
             Sign up
           </Button>
         </form>
-        <Link href="/dashboard">
-          <Button
-            variant="outlined"
-            color="neutral"
-            fullWidth
-            startDecorator={<GoogleIcon />}
-          >
-            Sign up with Google
-          </Button>
-        </Link>
         <Box
           sx={{
             display: 'flex',
@@ -110,11 +135,8 @@ export default function Register() {
             alignItems: 'center',
           }}
         >
-          <Link fontSize="sm" href="/" fontWeight="lg" mr="auto">
-            Back to home
-          </Link>
-          <Link fontSize="sm" href="/forgot-password" fontWeight="lg" ml="auto">
-            Forgot your password?
+          <Link fontSize="sm" href="/sign-in" fontWeight="lg" mr="auto">
+            Tengo una cuenta
           </Link>
         </Box>
       </Box>

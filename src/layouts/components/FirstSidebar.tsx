@@ -1,12 +1,10 @@
 import GlobalStyles from '@mui/joy/GlobalStyles';
-import Divider from '@mui/joy/Divider';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
 import Sheet from '@mui/joy/Sheet';
 // icons
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import ViewListIcon from '@mui/icons-material/ViewList';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
-import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -14,7 +12,13 @@ import MuiLogo from '../../assets/icons/MuiLogo';
 import { Link } from 'react-router-dom';
 import { IconButton } from '@mui/joy';
 
+import { UserContext } from '../../hooks/userContext';
+import {useContext} from 'react';
+import { removeToken } from '../../utils/auth';
+
 export default function FirstSidebar() {
+  const { user } = useContext(UserContext) || {};
+
   return (
     <Sheet
       className="FirstSidebar"
@@ -51,26 +55,26 @@ export default function FirstSidebar() {
       <MuiLogo />
       <List size="sm" sx={{ '--ListItem-radius': '6px', '--List-gap': '8px' }}>
         <ListItem>
-          <Link to="/dashboard">
-            <IconButton size="lg">
-              <DashboardRoundedIcon />
-            </IconButton>
-          </Link>
-        </ListItem>
-        <ListItem>
-          <Link to="/dashboard/profile">
+          <Link to="/profile">
             <IconButton size="lg">
               <PeopleRoundedIcon />
             </IconButton>
           </Link>
         </ListItem>
-        <ListItem>
-          <Link to="/dashboard/settings">
+        {user?.roles?.includes("ROLE_MODERATOR") && <ListItem>
+          <Link to="/users">
+            <IconButton size="lg">
+              <ViewListIcon />
+            </IconButton>
+          </Link>
+        </ListItem>}
+        {user?.roles?.includes("ROLE_ADMIN") && <ListItem>
+          <Link to="/management">
             <IconButton size="lg">
               <SettingsRoundedIcon />
             </IconButton>
           </Link>
-        </ListItem>
+        </ListItem>}
       </List>
       <List
         sx={{
@@ -81,21 +85,13 @@ export default function FirstSidebar() {
         }}
       >
         <ListItem>
-          <Link to="/">
-            <IconButton size="lg">
-              <HomeRoundedIcon />
-            </IconButton>
-          </Link>
-        </ListItem>
-        <ListItem>
-          <Link to="/sign-in">
+          <Link onClick={removeToken} to="/sign-in">
             <IconButton size="lg">
               <LogoutIcon />
             </IconButton>
           </Link>
         </ListItem>
       </List>
-      <Divider />
     </Sheet>
   );
 }

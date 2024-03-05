@@ -1,26 +1,41 @@
-import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
 import Chip, { chipClasses } from '@mui/joy/Chip';
 import Divider from '@mui/joy/Divider';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
-import FormHelperText from '@mui/joy/FormHelperText';
 import Input from '@mui/joy/Input';
-import Textarea from '@mui/joy/Textarea';
-import Stack from '@mui/joy/Stack';
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
-import Typography from '@mui/joy/Typography';
 import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab, { tabClasses } from '@mui/joy/Tab';
-import DropZone from './DropZone';
-import FileUpload from './FileUpload';
-import CountrySelector from './CountrySelector';
-import EditorToolbar from './EditorToolbar';
+import { UserContext } from '../../../hooks/userContext';
+import { FormEvent, useContext, useRef } from 'react';
+import { changePassword } from '../../../utils/profile';
+import AlternateEmailRoundedIcon from '@mui/icons-material/AlternateEmailRounded';
 
 export default function MyProfile() {
+  const { user } = useContext(UserContext) || {};
+  const passwdForm = useRef<HTMLFormElement>(null);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement> | any): Promise<void> {
+    event.preventDefault();
+    const password = passwdForm.current?.elements['password']?.value;
+    const rePassword = passwdForm.current?.elements['re_password']?.value;
+
+    if (password != rePassword || password == '') return alert("Invalid passwords")
+
+    try {
+      const response = await changePassword( user?.email, password)
+      if (response.status === 200) {
+        alert("Password updated")
+      } else {
+        console.error(response.status);
+      }
+    } catch (error) {
+      console.error('Error de red', error);
+    }
+  }
+
   return (
     <Box
       sx={{
@@ -100,30 +115,6 @@ export default function MyProfile() {
           <Tab indicatorInset value={0}>
             Account settings
           </Tab>
-          <Tab indicatorInset value={1}>
-            Team{' '}
-            <Chip size="sm" variant="soft" color="neutral" sx={{ ml: 1 }}>
-              2
-            </Chip>
-          </Tab>
-          <Tab indicatorInset value={2}>
-            Plan
-          </Tab>
-          <Tab indicatorInset value={3}>
-            Billing{' '}
-            <Chip size="sm" variant="soft" color="neutral" sx={{ ml: 1 }}>
-              4
-            </Chip>
-          </Tab>
-          <Tab indicatorInset value={4}>
-            Notifications
-          </Tab>
-          <Tab indicatorInset value={5}>
-            Integrations
-          </Tab>
-          <Tab indicatorInset value={6}>
-            API
-          </Tab>
         </TabList>
         <Box
           sx={{
@@ -143,16 +134,11 @@ export default function MyProfile() {
           }}
         >
           <FormLabel sx={{ display: { xs: 'none', sm: 'block' } }}>
-            Name
+            Username
           </FormLabel>
-          <Box sx={{ display: { xs: 'contents', sm: 'flex' }, gap: 2 }}>
+          <Box sx={{ display: { sm: 'contents' } }}>
             <FormControl sx={{ flex: 1 }}>
-              <FormLabel sx={{ display: { sm: 'none' } }}>First name</FormLabel>
-              <Input placeholder="first name" defaultValue="Siriwat" />
-            </FormControl>
-            <FormControl sx={{ flex: 1 }}>
-              <FormLabel sx={{ display: { sm: 'none' } }}>Last name</FormLabel>
-              <Input placeholder="last name" defaultValue="K." />
+              <Input disabled placeholder="username" defaultValue={user?.username} />
             </FormControl>
           </Box>
           <Divider role="presentation" />
@@ -160,102 +146,50 @@ export default function MyProfile() {
             <FormLabel>Email</FormLabel>
             <Input
               type="email"
-              startDecorator={<i data-feather="mail" />}
+              startDecorator={<AlternateEmailRoundedIcon fontSize='small' />}
+              disabled
               placeholder="email"
-              defaultValue="siriwatk@test.com"
+              defaultValue={user?.email}
             />
           </FormControl>
           <Divider role="presentation" />
           <div>
-            <FormLabel>Your photo</FormLabel>
-            <FormHelperText>
-              This will be displayed on your profile.
-            </FormHelperText>
+            <FormLabel>Roles</FormLabel>
           </div>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              flexWrap: 'wrap',
-              gap: 2.5,
-            }}
-          >
-            <Avatar
-              size="lg"
-              src="/static/images/avatar/1.jpg"
-              sx={{ '--Avatar-size': '64px' }}
-            />
-            <DropZone />
+          <Box sx={{ display: { xs: 'flex', sm: 'flex' }, gap: 2 }}>
+            {user?.roles?.map((role: string) => (
+              <Chip
+                variant="soft"
+                color="primary"
+                size="md"
+                sx={{ borderRadius: 'sm' }}
+                key={role}
+              >
+                {{
+                  'ROLE_ADMIN': 'Admin',
+                  'ROLE_MODERATOR': 'Moderator',
+                  'ROLE_USER': 'User'
+                }[role]}
+              </Chip>
+            ))}
           </Box>
           <Divider role="presentation" />
-          <FormControl sx={{ display: { sm: 'contents' } }}>
-            <FormLabel>Role</FormLabel>
-            <Input defaultValue="UI Developer" />
-          </FormControl>
-          <Divider role="presentation" />
-          <CountrySelector />
-          <Divider role="presentation" />
-          <FormControl sx={{ display: { sm: 'contents' } }}>
-            <FormLabel>Timezone</FormLabel>
-            <Select
-              startDecorator={<i data-feather="clock" />}
-              defaultValue="1"
-            >
-              <Option value="1">
-                Indochina Time (Bangkok){' '}
-                <Typography textColor="text.tertiary" ml={0.5}>
-                  — GMT+07:00
-                </Typography>
-              </Option>
-              <Option value="2">
-                Indochina Time (Ho Chi Minh City){' '}
-                <Typography textColor="text.tertiary" ml={0.5}>
-                  — GMT+07:00
-                </Typography>
-              </Option>
-            </Select>
-          </FormControl>
-          <Divider role="presentation" />
-          <div>
-            <FormLabel>Bio</FormLabel>
-            <FormHelperText>Write a short introduction.</FormHelperText>
-          </div>
-          <div>
-            <EditorToolbar />
-            <Textarea
-              minRows={4}
-              sx={{ mt: 1.5 }}
-              defaultValue="I'm a software developer based in Bangkok, Thailand. My goal is to solve UI problems with neat CSS without using too much JavaScript."
-            />
-            <FormHelperText sx={{ mt: 0.75, fontSize: 'xs' }}>
-              275 characters left
-            </FormHelperText>
-          </div>
-          <Divider role="presentation" />
-          <div>
-            <FormLabel>Portfolio projects</FormLabel>
-            <FormHelperText>Share a few snippets of your work.</FormHelperText>
-          </div>
-          <Stack useFlexGap spacing={1.5}>
-            <DropZone />
-            <FileUpload
-              fileName="Tech design requirements.pdf"
-              fileSize="200 KB"
-              progress={100}
-            />
-            <FileUpload
-              icon={<i data-feather="film" />}
-              fileName="Dashboard prototype recording.mp4"
-              fileSize="16 MB"
-              progress={40}
-            />
-            <FileUpload
-              icon={<i data-feather="upload-cloud" />}
-              fileName="Dashboard prototype FINAL.fig"
-              fileSize="4.2 MB"
-              progress={80}
-            />
-          </Stack>
+
+          <FormLabel sx={{ display: { xs: 'none', sm: 'block' } }}>
+            Update Password
+          </FormLabel>
+          <form ref={passwdForm} onSubmit={handleSubmit}>
+            <Box sx={{ display: { xs: 'contents', sm: 'flex' }, gap: 2 }}>
+              <FormControl sx={{ flex: 1 }}>
+                <FormLabel>New Password</FormLabel>
+                <Input placeholder="Password" type="password" name="password" required/>
+              </FormControl>
+              <FormControl sx={{ flex: 1 }}>
+                <FormLabel>Confirm Password</FormLabel>
+                <Input placeholder="Confirm" type="password" name="re_password"/>
+              </FormControl>
+            </Box>
+          </form>
           <Divider role="presentation" />
           <Box
             sx={{
@@ -265,10 +199,7 @@ export default function MyProfile() {
               gap: 1,
             }}
           >
-            <Button variant="outlined" color="neutral" size="sm">
-              Cancel
-            </Button>
-            <Button size="sm">Save</Button>
+            <Button onClick={handleSubmit} size="sm">Change password</Button>
           </Box>
         </Box>
       </Tabs>
